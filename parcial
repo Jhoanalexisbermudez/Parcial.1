@@ -1,0 +1,151 @@
+import java.util.*;
+
+class Student {
+    int age;
+    int semester;
+    int socioEconomicStratum;
+    int coursesCompleted;
+    int coursesPending;
+    String program;
+    int programId;
+
+    // Constructor
+    public Student(int age, int semester, int socioEconomicStratum, int coursesCompleted, int coursesPending, String program, int programId) {
+        this.age = age;
+        this.semester = semester;
+        this.socioEconomicStratum = socioEconomicStratum;
+        this.coursesCompleted = coursesCompleted;
+        this.coursesPending = coursesPending;
+        this.program = program;
+        this.programId = programId;
+    }
+
+    // Print student information
+    public void printInfo() {
+        System.out.println("Age: " + age +
+                ", Semester: " + semester +
+                ", Socioeconomic Stratum: " + socioEconomicStratum +
+                ", Courses Completed: " + coursesCompleted +
+                ", Courses Pending: " + coursesPending +
+                ", Program: " + program +
+                ", Program ID: " + programId);
+    }
+}
+
+public class Main {
+
+    // Print list of students
+    public static void printStudents(List<Student> students) {
+        for (Student s : students) {
+            s.printInfo();
+        }
+        System.out.println();
+    }
+
+    // Insertion Sort by age (ascending)
+    public static void insertionSortByAge(List<Student> students) {
+        for (int i = 1; i < students.size(); i++) {
+            Student key = students.get(i);
+            int j = i - 1;
+            while (j >= 0 && students.get(j).age > key.age) {
+                students.set(j + 1, students.get(j));
+                j = j - 1;
+            }
+            students.set(j + 1, key);
+        }
+    }
+
+    // Selection Sort by semester (descending)
+    public static void selectionSortBySemester(List<Student> students) {
+        for (int i = 0; i < students.size() - 1; i++) {
+            int maxIdx = i;
+            for (int j = i + 1; j < students.size(); j++) {
+                if (students.get(j).semester > students.get(maxIdx).semester) {
+                    maxIdx = j;
+                }
+            }
+            Student temp = students.get(maxIdx);
+            students.set(maxIdx, students.get(i));
+            students.set(i, temp);
+        }
+    }
+
+    // Linear Search by programId
+    public static Student linearSearchByProgramId(List<Student> students, int programId) {
+        for (Student s : students) {
+            if (s.programId == programId) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    // Binary Search by age (list must be sorted by age)
+    public static Student binarySearchByAge(List<Student> students, int age) {
+        int left = 0;
+        int right = students.size() - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (students.get(mid).age == age) {
+                return students.get(mid);
+            } else if (students.get(mid).age < age) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return null;
+    }
+
+    public static void main(String[] args) {
+        // Test dataset of 10 students
+        List<Student> students = new ArrayList<>();
+        students.add(new Student(21, 4, 3, 20, 10, "Engineering", 101));
+        students.add(new Student(19, 2, 2, 12, 18, "Mathematics", 102));
+        students.add(new Student(23, 6, 4, 30, 5, "Law", 103));
+        students.add(new Student(20, 3, 1, 18, 12, "Engineering", 104));
+        students.add(new Student(22, 5, 3, 25, 7, "Medicine", 105));
+        students.add(new Student(18, 1, 2, 10, 20, "Philosophy", 106));
+        students.add(new Student(25, 9, 5, 38, 2, "Architecture", 107));
+        students.add(new Student(24, 8, 4, 35, 3, "Medicine", 108));
+        students.add(new Student(30, 10, 6, 40, 0, "Engineering", 109));
+        students.add(new Student(27, 7, 5, 34, 4, "Law", 110));
+
+        System.out.println("Original list of students:");
+        printStudents(students);
+
+        // Insertion Sort by Age
+        List<Student> sortedByAge = new ArrayList<>(students);
+        insertionSortByAge(sortedByAge);
+        System.out.println("Students sorted by Age (ascending) using Insertion Sort:");
+        printStudents(sortedByAge);
+
+        // Selection Sort by Semester
+        List<Student> sortedBySemester = new ArrayList<>(students);
+        selectionSortBySemester(sortedBySemester);
+        System.out.println("Students sorted by Semester (descending) using Selection Sort:");
+        printStudents(sortedBySemester);
+
+        // Linear Search by Program ID
+        int searchProgramId = 105;
+        Student foundByProgramId = linearSearchByProgramId(students, searchProgramId);
+        System.out.println("Linear Search result for Program ID " + searchProgramId + ":");
+        if (foundByProgramId != null) {
+            foundByProgramId.printInfo();
+        } else {
+            System.out.println("Student not found.");
+        }
+
+        // Binary Search by Age
+        int searchAge = 22;
+        Student foundByAge = binarySearchByAge(sortedByAge, searchAge);
+        System.out.println("Binary Search result for Age " + searchAge + ":");
+        if (foundByAge != null) {
+            foundByAge.printInfo();
+        } else {
+            System.out.println("Student not found.");
+        }
+    }
+}
