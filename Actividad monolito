@@ -1,1 +1,155 @@
-current contents of the file
+// package.json
+{
+  "name": "cursos-estudiantes-api",
+  "version": "1.0.0",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2"
+  }
+}
+
+// src/app.js
+const express = require("express");
+const bodyParser = require("body-parser");
+
+const cursoController = require("./controllers/cursoController");
+const estudianteController = require("./controllers/estudianteController");
+
+const app = express();
+app.use(bodyParser.json());
+
+app.use("/cursos", cursoController);
+app.use("/estudiantes", estudianteController);
+
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+});
+
+// src/models/curso.js
+class Curso {
+  constructor(id, nombre) {
+    this.id = id;
+    this.nombre = nombre;
+  }
+}
+module.exports = Curso;
+
+// src/models/estudiante.js
+class Estudiante {
+  constructor(id, nombre) {
+    this.id = id;
+    this.nombre = nombre;
+  }
+}
+module.exports = Estudiante;
+
+// src/repositories/cursoRepository.js
+const cursos = [];
+
+class CursoRepository {
+  crear(curso) {
+    cursos.push(curso);
+    return curso;
+  }
+
+  listar() {
+    return cursos;
+  }
+}
+
+module.exports = new CursoRepository();
+
+// src/repositories/estudianteRepository.js
+const estudiantes = [];
+
+class EstudianteRepository {
+  crear(estudiante) {
+    estudiantes.push(estudiante);
+    return estudiante;
+  }
+
+  listar() {
+    return estudiantes;
+  }
+}
+
+module.exports = new EstudianteRepository();
+
+// src/services/cursoService.js
+const Curso = require("../models/curso");
+const cursoRepository = require("../repositories/cursoRepository");
+
+class CursoService {
+  crearCurso(nombre) {
+    const curso = new Curso(Date.now(), nombre);
+    return cursoRepository.crear(curso);
+  }
+
+  listarCursos() {
+    return cursoRepository.listar();
+  }
+}
+
+module.exports = new CursoService();
+
+// src/services/estudianteService.js
+const Estudiante = require("../models/estudiante");
+const estudianteRepository = require("../repositories/estudianteRepository");
+
+class EstudianteService {
+  crearEstudiante(nombre) {
+    const estudiante = new Estudiante(Date.now(), nombre);
+    return estudianteRepository.crear(estudiante);
+  }
+
+  listarEstudiantes() {
+    return estudianteRepository.listar();
+  }
+}
+
+module.exports = new EstudianteService();
+
+// src/controllers/cursoController.js
+const express = require("express");
+const router = express.Router();
+const cursoService = require("../services/cursoService");
+
+router.post("/", (req, res) => {
+  const { nombre } = req.body;
+  const nuevoCurso = cursoService.crearCurso(nombre);
+  res.status(201).json(nuevoCurso);
+});
+
+router.get("/", (req, res) => {
+  const cursos = cursoService.listarCursos();
+  res.json(cursos);
+});
+
+module.exports = router;
+
+// src/controllers/estudianteController.js
+const express = require("express");
+const router = express.Router();
+const estudianteService = require("../services/estudianteService");
+
+router.post("/", (req, res) => {
+  const { nombre } = req.body;
+  const nuevoEstudiante = estudianteService.crearEstudiante(nombre);
+  res.status(201).json(nuevoEstudiante);
+});
+
+router.get("/", (req, res) => {
+  const estudiantes = estudianteService.listarEstudiantes();
+  res.json(estudiantes);
+});
+
+module.exports = router;
+
+// link.txt
+Repositorio de la actividad:
+https://github.com/TU-USUARIO/TU-REPO
