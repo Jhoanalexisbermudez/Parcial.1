@@ -75,4 +75,5 @@ def listar_estudiantes():
     return jsonify([vars(e) for e in estudiantes_list])
 
 if __name__ == "__main__":
-    app.run(port=3000, debug=True)
+    app.run(port=3000, debug=True) 
+
